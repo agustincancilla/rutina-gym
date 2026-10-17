@@ -1,0 +1,5 @@
+# Copias de seguridad y datos personales: nunca subirlos
+*.json
+!manifest.webmanifest
+Thumbs.db
+desktop.ini
