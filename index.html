@@ -105,7 +105,8 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .log { background: var(--sunken); border-radius: 10px; padding: 10px; display: grid; gap: 8px; }
-.set-row, .set-head { display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; font-size: 14px; }
+.set-row, .set-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; font-size: 14px; }
+.log.bilbo .set-row, .log.bilbo .set-head { grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1fr); }
 .set-head { font-size: 12px; color: var(--muted); font-weight: 600; }
 .set-row input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--surface); font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
 
@@ -398,12 +399,12 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
           ${tl ? `<div class="last">Hoy: <b>${esc(setsText(tl.sets))}</b></div>` : ""}
           ${ll ? `<div class="last">Última vez (${fmtDate(ll.fecha)}): <b>${esc(setsText(ll.sets))}</b></div>` : ""}
           ${e.sets === 0 ? "" : openLog.has(e.id) ? `
-            <form class="log" data-log="${i}">
-              <div class="set-head"><span>Serie</span><span>Kilos</span><span>Repes</span></div>
+            <form class="log${nx ? " bilbo" : ""}" data-log="${i}">
+              <div class="set-head">${nx ? "<span></span>" : ""}<span>Kilos</span><span>Repes</span></div>
               ${nx ? `<div class="set-row"><span><b>Bilbo</b></span>
                 <input inputmode="decimal" aria-label="Kilos serie Bilbo" name="bkg" placeholder="${esc(nx.kg)}">
                 <input inputmode="numeric" aria-label="Repes serie Bilbo" name="breps" placeholder="al fallo"></div>` : ""}
-              <div class="set-row"><span>1</span>
+              <div class="set-row">${nx ? "<span>Series</span>" : ""}
                 <input inputmode="decimal" aria-label="Kilos serie 1" name="kg0" value="${esc((base[0] && base[0].kg) || defKg)}">
                 <input inputmode="numeric" aria-label="Repes serie 1" name="reps0" value="${esc(tl && tl.sets[0] ? tl.sets[0].reps : "")}" placeholder="${esc(ll && ll.sets[0] ? ll.sets[0].reps : "")}"></div>
               <div class="actions">
@@ -450,6 +451,9 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
       store.logs = store.logs.filter((l) => !(l.exId === ex.id && l.fecha === today));
       store.logs.push({ fecha: today, exId: ex.id, n: ex.n, sets });
       // El peso grande de la tarjeta pasa a ser el más alto anotado (mantiene "kg", "c/lado"…).
+      // Y las repes del esquema ("4 × 12") pasan a ser las anotadas.
+      const reps = parseInt(sets[0].reps, 10);
+      if (reps > 0) ex.scheme = ex.scheme.replace(/([×xX*]\s*)\d+(\s*[-–a]\s*\d+)?/, "$1" + reps);
       if (maxKg > 0) {
         const kgTxt = String(maxKg).replace(".", ",");
         if (/[\d.,]+/.test(ex.kg)) ex.kg = ex.kg.replace(/[\d.,]+/, kgTxt);

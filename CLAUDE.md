@@ -3,7 +3,7 @@
 App de la rutina de gimnasio de Agus: https://agustincancilla.github.io/rutina-gym/
 
 - Dos rutinas: **Volumen** (lun pecho y bíceps, mar hombros, mié piernas, vie espalda y tríceps) y **Definición** (lun, mié, vie full body). Abre en el día que toca hoy (o el próximo).
-- Pestaña Rutina: cada ejercicio con peso, series × repes y etiquetas (Bilbo, Rest pause, Drop set…); "Anotar series" guarda kilos y repes de la primera serie (las demás van con el mismo peso) y el peso grande de la tarjeta pasa a ser ese; muestra "Última vez". "Editar orden y día": reordenar, cambiar el día (si choca, se intercambian), editar/borrar/agregar.
+- Pestaña Rutina: cada ejercicio con peso, series × repes y etiquetas (Bilbo, Rest pause, Drop set…); "Anotar series" guarda kilos y repes de la primera serie (las demás van con el mismo peso) y el peso grande y las repes de la tarjeta pasan a ser esos; muestra "Última vez". "Editar orden y día": reordenar, cambiar el día (si choca, se intercambian), editar/borrar/agregar.
 - Pestaña Bilbo (máquina de pecho, press de banca, sentadilla): serie a la mitad del RM al fallo; +2,5 kg por semana mientras haga más de 15 repes; con 15 o menos, probar RM y empezar ciclo nuevo. Gráfico del ciclo e historial.
 - Descanso: botones **3:00 Serie** y **5:00 Bilbo**. Mantiene la pantalla prendida, suena y vibra.
 - Pesos en **total** (no "por lado"), salvo unilaterales, que van "c/lado". Mismos nombres de ejercicio en Volumen y Definición.
