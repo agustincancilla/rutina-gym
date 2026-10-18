@@ -382,7 +382,6 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
         <button class="btn btn-sm" type="button" data-edit-toggle>Editar orden y día</button></div>
       ${d.ex.map((e, i) => {
         const tl = todayLog(e.id), ll = lastLog(e.id);
-        const nSets = Math.max(1, e.sets || 1);
         const base = tl ? tl.sets : ll ? ll.sets : [];
         const defKg = (e.kg.match(/[\d.,]+/) || [""])[0];
         const tags = [...(e.bilbo ? ["Bilbo"] : []), ...e.tags.filter((t) => t !== "Bilbo")];
@@ -404,10 +403,9 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
               ${nx ? `<div class="set-row"><span><b>Bilbo</b></span>
                 <input inputmode="decimal" aria-label="Kilos serie Bilbo" name="bkg" placeholder="${esc(nx.kg)}">
                 <input inputmode="numeric" aria-label="Repes serie Bilbo" name="breps" placeholder="al fallo"></div>` : ""}
-              ${Array.from({ length: nSets }, (_, s) => `
-                <div class="set-row"><span>${s + 1}</span>
-                  <input inputmode="decimal" aria-label="Kilos serie ${s + 1}" name="kg${s}" value="${esc((base[s] && base[s].kg) || defKg)}">
-                  <input inputmode="numeric" aria-label="Repes serie ${s + 1}" name="reps${s}" value="${esc(tl && tl.sets[s] ? tl.sets[s].reps : "")}" placeholder="${esc(ll && ll.sets[s] ? ll.sets[s].reps : "")}"></div>`).join("")}
+              <div class="set-row"><span>1</span>
+                <input inputmode="decimal" aria-label="Kilos serie 1" name="kg0" value="${esc((base[0] && base[0].kg) || defKg)}">
+                <input inputmode="numeric" aria-label="Repes serie 1" name="reps0" value="${esc(tl && tl.sets[0] ? tl.sets[0].reps : "")}" placeholder="${esc(ll && ll.sets[0] ? ll.sets[0].reps : "")}"></div>
               <div class="actions">
                 <button class="btn btn-primary btn-sm" type="submit">Guardar</button>
                 <button class="btn btn-sm" type="button" data-close-log="${i}">Cancelar</button>
@@ -442,14 +440,21 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
     e.preventDefault();
     const f = e.target.closest("[data-log]"); if (!f) return;
     const ex = curDay().ex[Number(f.dataset.log)];
-    const nSets = Math.max(1, ex.sets || 1);
-    const sets = Array.from({ length: nSets }, (_, s) => ({ kg: f.elements["kg" + s].value.trim(), reps: f.elements["reps" + s].value.trim() }));
+    // Se anota solo la primera serie; el resto se hace con el mismo peso.
+    const sets = [{ kg: f.elements.kg0.value.trim(), reps: f.elements.reps0.value.trim() }];
+    const maxKg = Math.max(...sets.map((s) => num(s.kg) ?? -Infinity));
     let bilboMsg = "";
     const bkg = f.elements.bkg ? num(f.elements.bkg.value) : null, breps = f.elements.breps ? parseInt(f.elements.breps.value, 10) : null;
     openLog.delete(ex.id);
     save(() => {
       store.logs = store.logs.filter((l) => !(l.exId === ex.id && l.fecha === today));
       store.logs.push({ fecha: today, exId: ex.id, n: ex.n, sets });
+      // El peso grande de la tarjeta pasa a ser el más alto anotado (mantiene "kg", "c/lado"…).
+      if (maxKg > 0) {
+        const kgTxt = String(maxKg).replace(".", ",");
+        if (/[\d.,]+/.test(ex.kg)) ex.kg = ex.kg.replace(/[\d.,]+/, kgTxt);
+        else if (!ex.kg.trim()) ex.kg = kgTxt + " kg";
+      }
       const l = store.hechos[today] || (store.hechos[today] = []); if (!l.includes(ex.id)) l.push(ex.id);
       if (ex.bilbo && store.bilbo[ex.bilbo] && bkg && breps) {
         const cy = store.bilbo[ex.bilbo].cycles; cy[cy.length - 1].push({ kg: bkg, reps: breps, fecha: today });
