@@ -21,7 +21,7 @@ App web instalable (PWA) que anda sin internet, en GitHub Pages. Este repo es **
 
 - `index.html` tiene todo el HTML, CSS y JS. `manifest.webmanifest`, `sw.js`, `icons/`.
 - Rutas relativas (la app vive en `agustincancilla.github.io/<repo>/`).
-- Los datos viven solo en el `localStorage` del celu. Botón "Datos y copias" para descargar/cargar copias.
+- Los datos viven solo en el `localStorage` del celu. Botón "Datos y copias" para descargar/cargar copias. "Guardar en Drive o mail" (`shareBackup`) abre el menú de compartir del celu con la copia como `.txt` (Chrome no deja compartir `.json`); el botón "Hacer copia" del aviso de 30 días va directo ahí. Cargar datos acepta `.json` y `.txt`.
 - Fechas con la fecha **local** (no `toISOString()`, que en Argentina después de las 21 h da el día siguiente).
 
 ## Al cambiar algo

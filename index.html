@@ -324,6 +324,7 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
     const db = e.target.closest("[data-day]");
     if (db) { day = db.dataset.day; renderHeader(); renderHoy(); return; }
     if (e.target.closest("[data-open-data]")) openDataSheet();
+    if (e.target.closest("[data-share-backup]")) shareBackup();
   });
 
   /* ---------- Series anotadas ---------- */
@@ -345,7 +346,7 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
     const lb = lastBackup();
     const days = lb ? Math.floor((Date.parse(today) - Date.parse(lb)) / 86400000) : null;
     const reminder = days == null || days >= BACKUP_DIAS
-      ? `<div class="banner"><span>${days == null ? "Todavía no hiciste ninguna copia de seguridad. Si se borra la app o cambiás de celu, perdés lo anotado." : `Tu última copia de seguridad es de hace ${days} días.`}</span><button class="btn btn-sm" type="button" data-open-data>Hacer copia</button></div>` : "";
+      ? `<div class="banner"><span>${days == null ? "Todavía no hiciste ninguna copia de seguridad. Si se borra la app o cambiás de celu, perdés lo anotado." : `Tu última copia de seguridad es de hace ${days} días.`}</span><button class="btn btn-sm" type="button" data-share-backup>Hacer copia</button></div>` : "";
 
     if (editing) {
       box.innerHTML = `
@@ -639,6 +640,17 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
   function lastBackup() { try { return localStorage.getItem(BACKUP_KEY); } catch (_) { return null; } }
   function markBackup() { try { localStorage.setItem(BACKUP_KEY, today); } catch (_) {} renderHoy(); }
   const exportText = () => JSON.stringify({ app: "rutina-gym", version: 1, exportado: today, ...store }, null, 1);
+  /* Copia por el menú de compartir del celu (Drive, Gmail, WhatsApp…). Chrome no deja compartir .json, por eso va como .txt. */
+  async function shareBackup() {
+    let file = null;
+    try { file = new File([exportText()], `copia-rutina-gym-${today}.txt`, { type: "text/plain" }); } catch (_) {}
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: "Copia de la Rutina de Gym" }); markBackup(); toast("Copia lista"); }
+      catch (e) { if (e && e.name !== "AbortError") toast("No se pudo compartir. Probá con “Descargar archivo”."); }
+      return;
+    }
+    toast("Este navegador no deja compartir archivos. Usá “Descargar archivo” y subilo a Drive.");
+  }
   function openDataSheet() {
     const lb = lastBackup();
     const sheet = mountSheet(`
@@ -649,7 +661,8 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
           <h3>Hacer copia de seguridad</h3>
           <p class="hint">${lb ? `Última copia: ${fmtDate(lb)}` : "Todavía no hiciste ninguna copia."}</p>
           <div class="actions">
-            <button class="btn btn-primary" type="button" id="dl-backup" ${hasData() ? "" : "disabled"}>Descargar archivo</button>
+            <button class="btn btn-primary" type="button" id="share-backup" ${hasData() ? "" : "disabled"}>Guardar en Drive o mail</button>
+            <button class="btn" type="button" id="dl-backup" ${hasData() ? "" : "disabled"}>Descargar archivo</button>
             <button class="btn" type="button" id="copy-backup" ${hasData() ? "" : "disabled"}>Copiar como texto</button>
           </div>
         </div>
@@ -658,13 +671,14 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
           <p class="hint">Elegí el archivo de tu rutina o una copia, o pegá el texto. <b>Reemplaza todo lo que hay ahora.</b></p>
           <div class="actions">
             <label class="btn btn-primary" for="import-file" style="display:inline-block">Elegir archivo</label>
-            <input id="import-file" type="file" accept=".json,application/json,text/plain" hidden>
+            <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden>
           </div>
           <div class="f"><label for="import-text">O pegá el texto de la copia</label><textarea id="import-text"></textarea></div>
           <div class="actions"><button class="btn btn-danger" type="button" id="do-import">Cargar y reemplazar</button></div>
         </div>
         <div class="sheet-actions"><span></span><div><button class="btn" type="button" data-cancel>Cerrar</button></div></div>
       </div>`);
+    sheet.querySelector("#share-backup").addEventListener("click", shareBackup);
     sheet.querySelector("#dl-backup").addEventListener("click", () => {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([exportText()], { type: "application/json" }));
