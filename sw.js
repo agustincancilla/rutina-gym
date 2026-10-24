@@ -1,6 +1,6 @@
 // Guarda la app en el celu para que abra sin internet.
 // Al cambiar algo de la app, subir VERSION para que los celulares bajen la nueva.
-const VERSION = "v4";
+const VERSION = "v5";
 const APP_CACHE = "gym-app-" + VERSION;
 const FONT_CACHE = "gym-fonts";
 const APP_FILES = [
@@ -14,7 +14,8 @@ const APP_FILES = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(APP_CACHE).then((c) => c.addAll(APP_FILES)).then(() => self.skipWaiting()));
+  // cache: "reload" saltea la caché del navegador (GitHub Pages la guarda 10 min), así la versión nueva entra completa.
+  e.waitUntil(caches.open(APP_CACHE).then((c) => c.addAll(APP_FILES.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {
@@ -54,7 +55,7 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(
     caches.open(APP_CACHE).then(async (c) => {
       const hit = await c.match(req, { ignoreSearch: true }) || (req.mode === "navigate" ? await c.match("./index.html") : null);
-      const net = fetch(req).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => null);
+      const net = fetch(new Request(req.url, { cache: "no-cache", credentials: "same-origin" })).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }).catch(() => null);
       if (hit) { e.waitUntil(net); return hit; }
       return (await net) || new Response("Sin conexión", { status: 503 });
     })

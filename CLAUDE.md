@@ -27,8 +27,8 @@ App web instalable (PWA) que anda sin internet, en GitHub Pages. Este repo es **
 ## Al cambiar algo
 
 1. Cambiar `index.html`.
-2. **Subir `VERSION` en `sw.js`** (`v1` → `v2`…), si no el celu sigue mostrando la vieja.
+2. **Subir `VERSION` en `sw.js`** (`v1` → `v2`…), si no el celu sigue mostrando la vieja. Subir también `APP_VERSION` en `index.html` (se muestra en "Datos y copias").
 3. Si cambia la forma de los datos, que `normalize()` siga aceptando las copias viejas: Agus tiene datos cargados que no se pueden perder.
 4. Commit (terminar el mensaje con `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`) y push a `main`.
-5. Avisarle: el celu baja la versión nueva cuando tiene internet y la muestra **la segunda vez** que abre la app.
+5. Avisarle: la app baja la versión nueva al abrirla con internet y **se recarga sola** para mostrarla (`controllerchange` en `index.html`; `sw.js` instala con `cache: "reload"` y busca actualizaciones con `no-cache`, porque GitHub Pages cachea 10 minutos).
 

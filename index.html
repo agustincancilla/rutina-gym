@@ -228,6 +228,7 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
+const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y copias"
 (() => {
   const STORE_KEY = "rutina-gym-v1";
   const BACKUP_KEY = "rutina-gym-ultima-copia";
@@ -656,6 +657,7 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
     const sheet = mountSheet(`
       <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="data-title">
         <h2 id="data-title">Datos y copias</h2>
+        <p class="hint">Versión de la app: ${APP_VERSION}</p>
         <p class="hint" style="font-size:14px">Tu rutina y lo que anotás se guardan solo en este celu. Hacé una copia de vez en cuando y guardala en Drive o mandatela por WhatsApp.</p>
         <div class="sheet-section">
           <h3>Hacer copia de seguridad</h3>
@@ -726,7 +728,13 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
   renderAll();
   showTab((location.hash || "").slice(1));
 
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  if ("serviceWorker" in navigator) {
+    // Cuando baja una versión nueva, la app se recarga sola una vez para mostrarla (antes había que abrirla dos veces).
+    const habiaVersion = !!navigator.serviceWorker.controller;
+    let recargada = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (habiaVersion && !recargada) { recargada = true; location.reload(); } });
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").then((r) => r.update()).catch(() => {}); });
+  }
 })();
 </script>
 </body>
