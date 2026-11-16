@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PY=python3; \"$PY\" -c '' 2>/dev/null || PY=python; \"$PY\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/guardia.py\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

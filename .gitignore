@@ -1,5 +1,6 @@
 # Copias de seguridad y datos personales: nunca subirlos
 *.json
 !manifest.webmanifest
+!.claude/settings.json
 Thumbs.db
 desktop.ini
