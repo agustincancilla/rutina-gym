@@ -7,6 +7,7 @@ App de la rutina de gimnasio de Agus: https://agustincancilla.github.io/rutina-g
 - Pestaña Bilbo (máquina de pecho, press de banca, sentadilla): serie a la mitad del RM al fallo; +2,5 kg por semana mientras haga más de 15 repes; con 15 o menos, probar RM y empezar ciclo nuevo. Gráfico del ciclo e historial.
 - Descanso: botones **3:00 Serie** y **5:00 Bilbo**. Mantiene la pantalla prendida, suena y vibra.
 - Pesos en **total** (no "por lado"), salvo unilaterales, que van "c/lado". Mismos nombres de ejercicio en Volumen y Definición.
+- **v6 (26/11/2026, revisión con la skill web-design-guidelines):** lo escrito en "Anotar series" ya no se pierde al tildar otro ejercicio o redibujar (`renderHoy` guarda y repone los valores por `data-exid`); al guardar arranca solo el descanso (5:00 si se anotó la serie Bilbo, si no 3:00); Bilbo a medias avisa y no guarda; la pantalla queda prendida mientras la app está abierta; tocar un campo de kilos/repes selecciona el número; botones de 44-48 px y campos de 48 px; "Última vez" en 15 px; tirar hacia abajo ya no recarga (`overscroll-behavior`); hojas que no se cierran tocando afuera si hay cambios y con Guardar pegado abajo; pitido más fuerte.
 - Clave en el celu: `rutina-gym-v1`.
 
 ## Cómo trabajar con Agus

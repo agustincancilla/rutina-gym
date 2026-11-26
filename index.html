@@ -2,7 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <title>Rutina de Gym</title>
 <meta name="theme-color" content="#15171a">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -50,11 +50,13 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
+html, body { overscroll-behavior-y: contain; } /* tirar hacia abajo no recarga la app (se perdía lo anotado) */
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.4; -webkit-tap-highlight-color: transparent; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--head); }
 .wrap { max-width: 720px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
+button { cursor: pointer; touch-action: manipulation; }
+input, label, select { touch-action: manipulation; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 a { color: var(--accent); }
 
@@ -64,10 +66,10 @@ header.top .wrap { padding-block: 16px 14px; display: grid; gap: 12px; }
 .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: color-mix(in srgb, var(--head-fg) 60%, transparent); }
 .day-title { margin: 2px 0 0; font-family: var(--f-display); font-weight: 700; font-size: 34px; line-height: 1; text-transform: uppercase; text-wrap: balance; }
 .seg { display: inline-flex; background: color-mix(in srgb, var(--head-fg) 10%, transparent); border-radius: 99px; padding: 3px; }
-.seg button { border: 0; background: none; color: var(--head-fg); padding: 6px 12px; border-radius: 99px; font-weight: 600; font-size: 14px; }
+.seg button { border: 0; background: none; color: var(--head-fg); padding: 6px 14px; min-height: 40px; border-radius: 99px; font-weight: 600; font-size: 14px; }
 .seg button[aria-pressed="true"] { background: var(--head-fg); color: var(--head); }
 .days { display: flex; gap: 6px; flex-wrap: wrap; }
-.days button, .btn-head { border: 1px solid color-mix(in srgb, var(--head-fg) 25%, transparent); background: none; color: var(--head-fg); border-radius: 8px; padding: 6px 10px; font-weight: 600; font-size: 14px; }
+.days button, .btn-head { border: 1px solid color-mix(in srgb, var(--head-fg) 25%, transparent); background: none; color: var(--head-fg); border-radius: 8px; padding: 6px 12px; min-height: 44px; font-weight: 600; font-size: 14px; }
 .days button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .today-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; margin-left: 5px; vertical-align: middle; }
 
@@ -91,24 +93,26 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 .tag.bilbo { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .tag.rp { border-color: var(--plate-blue); color: var(--plate-blue); background: transparent; }
 .tag.ds { border-color: var(--plate-green); color: var(--plate-green); background: transparent; }
-.last { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.last { font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .last b { color: var(--ink); font-weight: 600; }
-.check { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: none; flex: none; display: grid; place-items: center; font-weight: 700; color: transparent; }
+.check { width: 44px; height: 44px; font-size: 20px; border-radius: 50%; border: 2px solid var(--line); background: none; flex: none; display: grid; place-items: center; font-weight: 700; color: transparent; }
 .ex.done .check { background: var(--ok); border-color: var(--ok); color: #fff; }
 
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 12px; font-weight: 600; font-size: 14px; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 12px; min-height: 44px; font-weight: 600; font-size: 14px; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn-danger { color: var(--accent); }
 .btn-danger.armed { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.btn-sm { padding: 5px 10px; font-size: 13px; }
+.btn-sm { padding: 8px 12px; font-size: 14px; }
+/* Anotar series / Guardar / Cancelar: grandes, para tocar con la mano transpirada */
+.ex .actions .btn, .log .actions .btn { min-height: 48px; padding: 10px 18px; font-size: 15px; }
 .btn:disabled { opacity: .35; cursor: default; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .log { background: var(--sunken); border-radius: 10px; padding: 10px; display: grid; gap: 8px; }
 .set-row, .set-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; font-size: 14px; }
 .log.bilbo .set-row, .log.bilbo .set-head { grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1fr); }
-.set-head { font-size: 12px; color: var(--muted); font-weight: 600; }
-.set-row input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--surface); font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.set-head { font-size: 13px; color: var(--muted); font-weight: 600; }
+.set-row input { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--surface); font-family: var(--f-mono); font-variant-numeric: tabular-nums; min-height: 48px; font-size: 18px; }
 
 .edit-bar { background: var(--surface); border: 2px dashed var(--accent); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
 .f { display: grid; gap: 4px; }
@@ -116,11 +120,12 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 .f input, .f select, .f textarea { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--bg); width: 100%; }
 .f textarea { min-height: 70px; resize: vertical; }
 .hint { font-size: 12px; color: var(--muted); }
-.move { display: flex; gap: 6px; flex: none; }
-.move .btn { min-width: 40px; font-size: 16px; }
+.move { display: flex; gap: 10px; flex: none; }
+.move .btn { min-width: 48px; min-height: 48px; font-size: 18px; }
 .ex-edit .scheme { font-size: 13px; margin-top: 2px; }
 .checks { display: flex; flex-wrap: wrap; gap: 8px 14px; }
-.checks label { display: flex; gap: 6px; align-items: center; font-size: 14px; font-weight: 500; color: var(--ink); }
+.checks label { display: flex; gap: 8px; align-items: center; min-height: 44px; font-size: 15px; font-weight: 500; color: var(--ink); }
+.checks input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--accent); }
 
 .lift { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; }
 .lift h3 { margin: 0; font-family: var(--f-display); font-size: 24px; text-transform: uppercase; }
@@ -156,14 +161,15 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 .timer .clock { font-family: var(--f-mono); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 92px; }
 .timer .clock.ring { color: var(--plate-yellow); }
 .timer .presets { display: flex; gap: 6px; }
-.timer button { border: 1px solid color-mix(in srgb, var(--head-fg) 25%, transparent); background: none; color: var(--head-fg); border-radius: 8px; padding: 8px 10px; font-weight: 600; font-size: 14px; }
+.timer button { border: 1px solid color-mix(in srgb, var(--head-fg) 25%, transparent); background: none; color: var(--head-fg); border-radius: 8px; padding: 8px 12px; min-height: 44px; font-weight: 600; font-size: 14px; }
 .timer .rest-bilbo { border-color: var(--accent); }
 .timer .stop { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .timer-label { font-size: 12px; color: color-mix(in srgb, var(--head-fg) 60%, transparent); text-transform: uppercase; letter-spacing: .1em; }
 
-.sheet-back { position: fixed; inset: 0; background: rgba(10, 12, 14, .5); z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.sheet-back { position: fixed; inset: 0; background: rgba(10, 12, 14, .5); z-index: 20; display: flex; align-items: flex-end; justify-content: center; overscroll-behavior: contain; }
+body.con-hoja { overflow: hidden; }
 .sheet {
-  background: var(--surface); width: 100%; max-width: 560px; max-height: 92%; overflow-y: auto; border-radius: 14px 14px 0 0; display: grid; gap: 14px;
+  background: var(--surface); width: 100%; max-width: 560px; max-height: 92%; max-height: 92dvh; overflow-y: auto; overscroll-behavior: contain; border-radius: 14px 14px 0 0; display: grid; gap: 14px;
   padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 @media (min-width: 600px) { .sheet-back { align-items: center; } .sheet { border-radius: 14px; } }
@@ -172,6 +178,8 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 .sheet p { margin: 0; }
 .sheet-section { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
 .sheet-actions { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+/* Guardar/Cancelar siempre a la vista, aunque el teclado achique la hoja */
+.sheet > .sheet-actions:last-child { position: sticky; bottom: calc(-18px - env(safe-area-inset-bottom, 0px)); background: var(--surface); padding: 10px 0 calc(10px + env(safe-area-inset-bottom, 0px)); margin-bottom: calc(-18px - env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }
 .sheet-actions div { display: flex; gap: 8px; }
 
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); }
@@ -228,7 +236,7 @@ main .wrap { padding-block: 16px 120px; display: grid; gap: 12px; }
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
-const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y copias"
+const APP_VERSION = "v6"; // igual que VERSION en sw.js: se muestra en "Datos y copias"
 (() => {
   const STORE_KEY = "rutina-gym-v1";
   const BACKUP_KEY = "rutina-gym-ultima-copia";
@@ -281,11 +289,11 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
   try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (_) {}
 
   let toastTimer;
-  function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2600); }
+  function toast(m, ms = 2600) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), ms); }
   function save(mutate, okMsg) {
     const before = JSON.stringify(store);
     try { mutate(); localStorage.setItem(STORE_KEY, JSON.stringify(store)); renderAll(); if (okMsg) toast(okMsg); return true; }
-    catch (_) { store = JSON.parse(before); toast("No se pudo guardar en el celu. Revisá que tenga espacio libre."); return false; }
+    catch (_) { store = JSON.parse(before); toast("No se pudo guardar en el celu. Revisá que tenga espacio libre.", 6000); return false; }
   }
   const hasData = () => Object.keys(store.plans).length > 0;
 
@@ -335,7 +343,17 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
   const isDone = (exId) => (store.hechos[today] || []).includes(exId);
 
   /* ---------- Rutina del día ---------- */
+  // Al redibujar la pantalla (tildar otro ejercicio, cambiar de día…) se conserva lo que estabas escribiendo en "Anotar series" (v6)
   function renderHoy() {
+    const box = $("#p-hoy"), escrito = {};
+    box.querySelectorAll("form[data-exid]").forEach((f) => { escrito[f.dataset.exid] = [...f.elements].filter((el) => el.name).map((el) => [el.name, el.value]); });
+    renderHoyBase();
+    for (const [id, vals] of Object.entries(escrito)) {
+      const f = [...box.querySelectorAll("form[data-exid]")].find((x) => x.dataset.exid === id); if (!f) continue;
+      for (const [n, v] of vals) if (f.elements[n]) f.elements[n].value = v;
+    }
+  }
+  function renderHoyBase() {
     const box = $("#p-hoy");
     if (!hasData()) {
       box.innerHTML = `<div class="empty"><b>Todavía no cargaste tu rutina.</b><span>Tocá “Cargar mis datos” y elegí el archivo rutina-gym-datos.json que te pasaron.</span>
@@ -401,14 +419,14 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
           ${tl ? `<div class="last">Hoy: <b>${esc(setsText(tl.sets))}</b></div>` : ""}
           ${ll ? `<div class="last">Última vez (${fmtDate(ll.fecha)}): <b>${esc(setsText(ll.sets))}</b></div>` : ""}
           ${e.sets === 0 ? "" : openLog.has(e.id) ? `
-            <form class="log${nx ? " bilbo" : ""}" data-log="${i}">
+            <form class="log${nx ? " bilbo" : ""}" data-log="${i}" data-exid="${esc(e.id)}">
               <div class="set-head">${nx ? "<span></span>" : ""}<span>Kilos</span><span>Repes</span></div>
               ${nx ? `<div class="set-row"><span><b>Bilbo</b></span>
-                <input inputmode="decimal" aria-label="Kilos serie Bilbo" name="bkg" placeholder="${esc(nx.kg)}">
-                <input inputmode="numeric" aria-label="Repes serie Bilbo" name="breps" placeholder="al fallo"></div>` : ""}
+                <input inputmode="decimal" enterkeyhint="done" autocomplete="off" aria-label="Kilos serie Bilbo" name="bkg" placeholder="${esc(nx.kg)}">
+                <input inputmode="numeric" enterkeyhint="done" autocomplete="off" aria-label="Repes serie Bilbo" name="breps" placeholder="al fallo"></div>` : ""}
               <div class="set-row">${nx ? "<span>Series</span>" : ""}
-                <input inputmode="decimal" aria-label="Kilos serie 1" name="kg0" value="${esc((base[0] && base[0].kg) || defKg)}">
-                <input inputmode="numeric" aria-label="Repes serie 1" name="reps0" value="${esc(tl && tl.sets[0] ? tl.sets[0].reps : "")}" placeholder="${esc(ll && ll.sets[0] ? ll.sets[0].reps : "")}"></div>
+                <input inputmode="decimal" enterkeyhint="done" autocomplete="off" aria-label="Kilos serie 1" name="kg0" value="${esc((base[0] && base[0].kg) || defKg)}">
+                <input inputmode="numeric" enterkeyhint="done" autocomplete="off" aria-label="Repes serie 1" name="reps0" value="${esc(tl && tl.sets[0] ? tl.sets[0].reps : "")}" placeholder="${esc(ll && ll.sets[0] ? ll.sets[0].reps : "")}"></div>
               <div class="actions">
                 <button class="btn btn-primary btn-sm" type="submit">Guardar</button>
                 <button class="btn btn-sm" type="button" data-close-log="${i}">Cancelar</button>
@@ -448,8 +466,11 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
     const maxKg = Math.max(...sets.map((s) => num(s.kg) ?? -Infinity));
     let bilboMsg = "";
     const bkg = f.elements.bkg ? num(f.elements.bkg.value) : null, breps = f.elements.breps ? parseInt(f.elements.breps.value, 10) : null;
+    if (f.elements.bkg && (f.elements.bkg.value.trim() || f.elements.breps.value.trim()) && !(bkg && breps)) {
+      toast("Falta completar la serie Bilbo (kilos y repes).", 5000); return;
+    }
     openLog.delete(ex.id);
-    save(() => {
+    if (save(() => {
       store.logs = store.logs.filter((l) => !(l.exId === ex.id && l.fecha === today));
       store.logs.push({ fecha: today, exId: ex.id, n: ex.n, sets });
       // El peso grande de la tarjeta pasa a ser el más alto anotado (mantiene "kg", "c/lado"…).
@@ -466,18 +487,32 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
         const cy = store.bilbo[ex.bilbo].cycles; cy[cy.length - 1].push({ kg: bkg, reps: breps, fecha: today });
         bilboMsg = " Serie Bilbo anotada: descansá 5:00.";
       }
-    }, "Guardado." + (bilboMsg || " Arrancá el descanso abajo."));
+    })) {
+      // El mensaje se arma después de guardar (antes se armaba sin saber si había serie Bilbo). El descanso arranca solo (v6).
+      toast("Guardado." + (bilboMsg ? " Serie Bilbo anotada: descanso de 5:00 en marcha." : " Descanso de 3:00 en marcha."));
+      startRest(bilboMsg ? 300 : 180);
+    }
   });
+
+  $("#p-hoy").addEventListener("focusin", (e) => { if (e.target.matches("form[data-log] input")) { try { e.target.select(); } catch (_) {} } });
 
   /* ---------- Hoja: editar ejercicio ---------- */
   function mountSheet(html) {
     $("#sheet-root").innerHTML = `<div class="sheet-back">${html}</div>`;
+    document.body.classList.add("con-hoja");
     const back = $(".sheet-back");
+    // Tocar afuera cierra la hoja solo si no escribiste nada; con cambios hay que usar Cancelar (v6)
+    let cambios = false;
+    back.addEventListener("input", () => { cambios = true; });
+    back.addEventListener("change", () => { cambios = true; });
+    back.addEventListener("click", (e) => {
+      if (e.target === back && cambios) { e.stopImmediatePropagation(); toast("Tenés cambios sin guardar: tocá Cancelar para salir"); }
+    }, true);
     back.addEventListener("click", (e) => { if (e.target === back || e.target.closest("[data-cancel]")) closeSheet(); });
     back.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
     return back.firstElementChild;
   }
-  function closeSheet() { $("#sheet-root").innerHTML = ""; }
+  function closeSheet() { $("#sheet-root").innerHTML = ""; document.body.classList.remove("con-hoja"); }
   function openExSheet(d, i) {
     const e = i >= 0 ? d.ex[i] : { n: "", kg: "", scheme: "", sets: 3, tags: [] };
     const form = mountSheet(`
@@ -611,7 +646,7 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
       actx = actx || new (window.AudioContext || window.webkitAudioContext)();
       [0, 0.3, 0.6].forEach((t) => {
         const o = actx.createOscillator(), g = actx.createGain();
-        o.frequency.value = 880; g.gain.value = 0.2; o.connect(g); g.connect(actx.destination);
+        o.frequency.value = 880; g.gain.value = 0.5; o.connect(g); g.connect(actx.destination);
         o.start(actx.currentTime + t); o.stop(actx.currentTime + t + 0.18);
       });
     } catch (_) {}
@@ -623,19 +658,22 @@ const APP_VERSION = "v5"; // igual que VERSION en sw.js: se muestra en "Datos y 
       if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
     } catch (_) {}
   }
-  function stopTimer() { clearInterval(tick); tick = null; endAt = 0; $("#stop").hidden = true; keepScreenOn(false); }
+  // La pantalla queda prendida mientras la app está abierta (entre series también), no solo durante el descanso (v6)
+  function stopTimer() { clearInterval(tick); tick = null; endAt = 0; $("#stop").hidden = true; }
   function drawClock() {
     const left = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
     $("#clock").textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
     if (endAt && left === 0) { stopTimer(); $("#clock").classList.add("ring"); beep(); toast("¡Terminó el descanso!"); }
   }
-  document.querySelectorAll("[data-rest]").forEach((b) => b.addEventListener("click", () => {
+  function startRest(seg) {
     try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); actx.resume(); } catch (_) {}
-    endAt = Date.now() + Number(b.dataset.rest) * 1000; $("#clock").classList.remove("ring"); $("#stop").hidden = false;
+    endAt = Date.now() + seg * 1000; $("#clock").classList.remove("ring"); $("#stop").hidden = false;
     clearInterval(tick); tick = setInterval(drawClock, 250); drawClock(); keepScreenOn(true);
-  }));
+  }
+  document.querySelectorAll("[data-rest]").forEach((b) => b.addEventListener("click", () => startRest(Number(b.dataset.rest))));
+  keepScreenOn(true);
   $("#stop").addEventListener("click", () => { stopTimer(); $("#clock").textContent = "0:00"; });
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && endAt) { keepScreenOn(true); drawClock(); } });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { keepScreenOn(true); if (endAt) drawClock(); } });
 
   /* ---------- Datos y copias ---------- */
   function lastBackup() { try { return localStorage.getItem(BACKUP_KEY); } catch (_) { return null; } }
