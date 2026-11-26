@@ -183,6 +183,8 @@ body.con-hoja { overflow: hidden; }
 .sheet-actions div { display: flex; gap: 8px; }
 
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); }
+/* Con una hoja abierta, el aviso sube para no tapar Guardar/Cancelar */
+body.con-hoja .toast { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 @media (max-width: 400px) { .day-title { font-size: 28px; } .timer .clock { font-size: 24px; min-width: 78px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
